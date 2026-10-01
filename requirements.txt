@@ -2,7 +2,7 @@ streamlit
 wordcloud
 matplotlib
 pandas
-numpy
+numpy<2.0.0
 Pillow
 ultralytics
 torch
@@ -25,6 +25,10 @@ pytesseract
 textblob
 streamlit-lottie
 scikit-learn
+nltk
+pypdf
+tf-keras
+tensorflow<2.16.0
 nltk
 pypdf
 keras
