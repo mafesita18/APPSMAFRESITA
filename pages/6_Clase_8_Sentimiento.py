@@ -3,13 +3,6 @@ from streamlit_lottie import st_lottie
 import json
 import os
 
-st.set_page_config(
-    page_title="Explorador de Emociones ✨",
-    page_icon="🎈",
-    layout="centered",
-    initial_sidebar_state="collapsed"
-)
-
 def load_lottie_file(filepath: str):
     if os.path.exists(filepath):
         with open(filepath, "r", encoding="utf-8") as f:
@@ -22,7 +15,6 @@ lottie_neutral = load_lottie_file("Neutral face.json")
 
 st.markdown("""
     <style>
-    [data-testid="stSidebar"] {display: none;}
     .block-container {padding-top: 2rem !important; padding-bottom: 2rem !important;}
 
     .stApp {
