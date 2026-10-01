@@ -14,14 +14,12 @@ wordcloud
 matplotlib
 pandas
 scikit-learn
-tensorflow
-keras
-torch
+tensorflow-cpu
+torch --extra-index-url https://download.pytorch.org/whl/cpu
 ultralytics
 langchain
 langchain-community
 langchain-openai
-langchain-text-splitters
 PyPDF2
 faiss-cpu
 openai
