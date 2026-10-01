@@ -22,7 +22,8 @@ st.header("📚 Catálogo de Aplicaciones por Clase")
 # Clase 6
 with st.expander("📌 **CLASE 6: Interfaces e Interacción**", expanded=True):
     st.markdown("""
-    * **Interfaces Multimodales:** Introducción al diseño de interfaces interactivas y componentes de captura de entradas de usuario.
+    * **Clase 6 Interfaces:** Primera aplicación desarrollada para poner a prueba componentes interactivos básicos y entradas de usuario en Streamlit.
+    * **Clase 6 IMM1 (Hello Kitty):** Aplicación temática e interactiva con estética kawaii de Hello Kitty para conversión y reproducción de audio.
     """)
 
 # Clase 7
