@@ -26,7 +26,7 @@ ke = st.text_input('Ingresa tu Clave', type="password")
 
 if canvas_result.image_data is not None and ke and st.button("Analiza la imagen"):
     openai.api_key = ke
-    with st.spinner("Analizando ..."):
+    with st.spinner("Analizando..."):
         input_numpy_array = np.array(canvas_result.image_data)
         input_image = Image.fromarray(input_numpy_array.astype('uint8'), 'RGBA')
         input_image.save('img.png')
@@ -46,6 +46,9 @@ if canvas_result.image_data is not None and ke and st.button("Analiza la imagen"
                 ],
                 max_tokens=500
             )
+            st.write(response.choices[0].message.content)
+        except Exception as e:
+            st.error(f"Error al consultar la API: {e}")
             st.write(response.choices[0].message.content)
         except Exception as e:
             st.error(f"Error: {e}")
