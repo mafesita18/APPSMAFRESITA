@@ -5,7 +5,6 @@ import tensorflow as tf
 from tensorflow import keras
 from PIL import Image
 from streamlit_drawable_canvas import st_canvas
-import pandas as pd
 
 st.set_page_config(
     page_title="Detector de Dígitos MNIST",
@@ -25,15 +24,11 @@ def load_mnist_model():
     for model_path in model_files:
         if os.path.exists(model_path):
             try:
-                st.info(f"📂 Intentando cargar: {model_path}")
                 model = keras.models.load_model(model_path)
-                st.success(f"✅ Modelo cargado exitosamente desde: `{model_path}`")
                 return model
-            except Exception as e:
-                st.error(f"❌ Error al cargar {model_path}: {str(e)}")
+            except Exception:
                 continue
-    st.error("❌ No se encontró ningún modelo")
-    st.stop()
+    return None
 
 model = load_mnist_model()
 
@@ -49,14 +44,12 @@ with col1:
 
 with col2:
     predict_btn = st.button("🔍 **Predecir**", type="primary", use_container_width=True)
-    if st.button("🗑️ Limpiar", use_container_width=True):
-        st.rerun()
 
-if predict_btn and canvas_result.image_data is not None:
+if predict_btn and canvas_result.image_data is not None and model is not None:
     if np.max(canvas_result.image_data) == 0:
         st.warning("⚠️ Por favor, dibuja un dígito primero")
     else:
-        with st.spinner("🤔 Analizando..."):
+        with st.spinner("Analizando..."):
             image = Image.fromarray(canvas_result.image_data.astype("uint8")).convert("L")
             image_resized = image.resize((28, 28), Image.Resampling.LANCZOS)
             img_array = np.array(image_resized) / 255.0
