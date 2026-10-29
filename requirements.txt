@@ -29,7 +29,14 @@ nltk
 pypdf
 tf-keras
 tensorflow<2.16.0
-nltk
-pypdf
 keras
-tensorflow
+PyPDF2
+streamlit-drawable-canvas==0.9.3
+openai
+langchain
+langchain-community
+faiss-cpu
+tiktoken
+python-dotenv
+streamlit-extras
+altair
