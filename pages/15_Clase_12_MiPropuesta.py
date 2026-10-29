@@ -14,48 +14,88 @@ def encode_image_to_base64(image_path):
         return None
 
 st.set_page_config(page_title='Generador de Criaturas Fantásticas 👾', page_icon='👾', layout='centered')
+
 st.title("👾 Generador de Criaturas y Monstruos Fantásticos")
+st.markdown("Dibuja cualquier figura, monstruo o garabato en el lienzo y la IA creará sus estadísticas, poderes y ficha técnica completa.")
 
 with st.sidebar:
+    st.header("🎨 Herramientas del Lienzo")
     stroke_width = st.slider('Ancho del pincel', 1, 30, 5)
     stroke_color = st.color_picker('Color de trazo', '#000000')
 
+st.subheader("🖊️ Dibuja tu criatura aquí:")
+
 canvas_result = st_canvas(
-    fill_color="rgba(255, 165, 0, 0.3)", stroke_width=stroke_width,
-    stroke_color=stroke_color, background_color="#FFFFFF",
-    height=320, width=450, drawing_mode="freedraw", key="canvas_monstruo",
+    fill_color="rgba(255, 165, 0, 0.3)",
+    stroke_width=stroke_width,
+    stroke_color=stroke_color,
+    background_color="#FFFFFF",
+    height=320,
+    width=450,
+    drawing_mode="freedraw",
+    key="canvas_monstruo",
 )
 
 ke = st.text_input('🔑 Ingresa tu OpenAI API Key:', type="password")
 
-if canvas_result.image_data is not None and st.button("🚀 ¡Analizar Criatura!"):
-    if not ke:
-        st.warning("⚠️ Por favor ingresa tu OpenAI API Key.")
+if ke:
+    openai.api_key = ke
+    api_key = ke
+else:
+    api_key = None
+
+analyze_button = st.button("🚀 ¡Analizar Criatura y Generar Poderes!", type="primary")
+
+if canvas_result.image_data is not None and analyze_button:
+    if not api_key:
+        st.warning("⚠️ Por favor ingresa tu OpenAI API Key antes de continuar.")
     else:
-        openai.api_key = ke
-        with st.spinner("⚡ Identificando especie..."):
+        with st.spinner("⚡ Identificando especie, calculando nivel de poder y habilidades..."):
             input_numpy_array = np.array(canvas_result.image_data)
             input_image = Image.fromarray(input_numpy_array.astype('uint8'), 'RGBA')
             input_image.save('boceto.png')
+            
             base64_image = encode_image_to_base64("boceto.png")
             
-            prompt_text = "Crea una ficha estilo Pokémon para esta criatura dibujada en español."
-            
-            try:
-                response = openai.ChatCompletion.create(
-                    model="gpt-4o-mini",
-                    messages=[
-                        {
-                            "role": "user",
-                            "content": [
-                                {"type": "text", "text": prompt_text},
-                                {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{base64_image}"}}
-                            ]
-                        }
-                    ],
-                    max_tokens=600
+            if base64_image:
+                prompt_text = (
+                    "Observa detenidamente este dibujo o boceto de una criatura/monstruo. "
+                    "Analiza su forma, extremidades, trazos y estructura. "
+                    "Crea una ficha de personaje de juego estilo Pokémon o RPG con los siguientes puntos: "
+                    "\n\n"
+                    "1. 👾 **Nombre de la Criatura:** (Inventa un nombre único y genial)\n"
+                    "2. 🏷️ **Clase / Elemento:** (Ejemplo: Fuego Místico, Sombra Digital, Viento Cósmico, etc.)\n"
+                    "3. ⚡ **Nivel de Poder:** (Un número del 1 al 999 con una breve justificación)\n"
+                    "4. 💥 **3 Habilidades Especiales:** (Describe 3 ataques o superpoderes divertidos basados en el dibujo)\n"
+                    "5. 🌍 **Hábitat Natural:** (Dónde vive esta criatura)\n"
+                    "6. 📜 **Descripción y Origen:** (Un párrafo tierno/divertido explicando su personalidad y comportamiento)."
                 )
-                st.success("¡Ficha Creada!")
-                st.markdown(response.choices[0].message.content)
-            except Exception as e:
-                st.error(f"Error: {e}")
+
+                try:
+                    response = openai.ChatCompletion.create(
+                        model="gpt-4o-mini",
+                        messages=[
+                            {
+                                "role": "user",
+                                "content": [
+                                    {"type": "text", "text": prompt_text},
+                                    {
+                                        "type": "image_url",
+                                        "image_url": {
+                                            "url": f"data:image/png;base64,{base64_image}"
+                                        },
+                                    },
+                                ],
+                            }
+                        ],
+                        max_tokens=600,
+                    )
+                    
+                    resultado = response.choices[0].message.content
+                    
+                    st.success("¡Ficha de Criatura Creada Exitosamente!")
+                    st.markdown("---")
+                    st.markdown(resultado)
+
+                except Exception as e:
+                    st.error(f"Ocurrió un error al consultar la API: {e}")
