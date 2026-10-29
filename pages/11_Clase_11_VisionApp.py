@@ -47,4 +47,7 @@ if uploaded_file is not None and ke:
                 )
                 st.write(response.choices[0].message.content)
             except Exception as e:
+                st.error(f"Error al consultar la API: {e}")
+                st.write(response.choices[0].message.content)
+            except Exception as e:
                 st.error(f"Error: {e}")
